@@ -4,9 +4,10 @@ RSpec.describe(Category) do
   describe 'create' do
     subject { Category.create(params) }
 
-    let(:params) { { title: title, description: description } }
+    let(:params) { { title: title, description: description, task: task } }
     let(:title) { 'Valid Title' }
     let(:description) { 'Valid Description' }
+    let(:task) { 'Valid Task' }
 
     context 'when the values are valid' do
       it { is_expected.to be_valid }
@@ -83,6 +84,12 @@ RSpec.describe(Category) do
       let(:description) { 'A' * 101 }
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'when the task is empty' do
+      let(:task) {''}
+
+      it { is_expected.not_to be_valid }
     end
   end
 end

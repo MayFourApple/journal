@@ -7,5 +7,7 @@ Rails.application.routes.draw do
   # get '/categories/new' => 'categories#new', as: 'new_category'
   # post '/categories' => 'categories#create', as: 'create_category'
 
-  resources :categories
+  resources :categories do
+    resources :tasks
+  end
 end
