@@ -34,7 +34,9 @@ class CategoriesController < ApplicationController
   end
 
   def show
-    @category = Category.find(params[:id])
+    @category = current_user.categories.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    return not_found
   end
 
   def destroy
@@ -45,5 +47,9 @@ class CategoriesController < ApplicationController
 
   def category_params
     params.require(:category).permit(:title, :description)
+  end
+
+  def not_found
+    render :file => "#{Rails.root}/public/404.html",  layout: false, status: :not_found
   end
 end

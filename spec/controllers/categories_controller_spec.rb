@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe(CategoriesController) do
   render_views
 
+  let(:user) { User.create(email: 'user@example.com', password: 'password') }
+
+  before { sign_in user }
+
   describe 'POST /categories' do
     let(:params) { { category: { title: title, description: description } } }
     let(:title) { 'Valid Title' }
@@ -61,21 +65,36 @@ RSpec.describe(CategoriesController) do
   end
 
   describe 'GET /categories/:id' do
-    let!(:category) { Category.create(title: 'Category Title', description: 'Category Description') }
-    let!(:task) { Task.create(category: category, title: 'Task Title', description: 'Task Description')}
+    context 'when the category is owned by the current user' do
+      let!(:category) { Category.create(title: 'Category Title', description: 'Category Description', user: user) }
+      let!(:task) { Task.create(category: category, title: 'Task Title', description: 'Task Description')}
 
-    before do
-      get :show, params: { id: category.id }
+      before do
+        get :show, params: { id: category.id }
+      end
+      
+      it 'renders the category' do
+        expect(response.body).to include(category.title)
+        expect(response.body).to include(category.description)
+      end
+
+      it 'renders the tasks of the category' do
+        expect(response.body).to include(task.title)
+        expect(response.body).to include(task.description)
+      end
     end
 
-    it 'renders the category' do
-      expect(response.body).to include(category.title)
-      expect(response.body).to include(category.description)
-    end
+    context 'when the category is not owned by the current user' do
+      let!(:other_user) { User.create(email: 'other@example.com', password: 'password') }
+      let!(:category) { Category.create(title: 'Category Title', description: 'Category Description', user: other_user) }
 
-    it 'renders the tasks of the category' do
-      expect(response.body).to include(task.title)
-      expect(response.body).to include(task.description)
+      before do
+        get :show, params: { id: category.id }
+      end
+      
+      it 'rejects the request' do
+        expect(response).to have_http_status(:not_found)
+      end
     end
   end
 
