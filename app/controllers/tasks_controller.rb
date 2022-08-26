@@ -1,4 +1,15 @@
 class TasksController < ApplicationController
+
+  def index 
+    @category = Category.find(params[:category_id])
+    @tasks = @category.tasks
+  end
+
+  def today
+    @category = Category.find(params[:category_id])
+    @tasks = Task.where(date: Date.today)
+  end
+
   def new
     @category = Category.find(params[:category_id])
     @task = @category.tasks.new

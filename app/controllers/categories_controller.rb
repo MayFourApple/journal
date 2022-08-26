@@ -1,7 +1,8 @@
 class CategoriesController < ApplicationController
-  def index
-    @categories = Category.all
+  before_action :authenticate_user!
 
+  def index
+    @categories = current_user.categories
   end
 
   def new
@@ -9,7 +10,7 @@ class CategoriesController < ApplicationController
   end
 
   def create
-    @category = Category.create(category_params)
+    @category = Category.create(user: current_user, **category_params)
 
     if @category.save
       render :show, status: :created

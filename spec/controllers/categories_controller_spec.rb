@@ -60,7 +60,7 @@ RSpec.describe(CategoriesController) do
     end
   end
 
-  describe 'GET /catgories/:id' do
+  describe 'GET /categories/:id' do
     let!(:category) { Category.create(title: 'Category Title', description: 'Category Description') }
     let!(:task) { Task.create(category: category, title: 'Task Title', description: 'Task Description')}
 
