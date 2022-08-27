@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   # post '/categories' => 'categories#create', as: 'create_category'
 
   root to: "categories#index"
+  get '/tasks/today' => 'tasks#today'
 
   resources :categories do
     resources :tasks

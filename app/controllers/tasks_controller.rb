@@ -6,8 +6,7 @@ class TasksController < ApplicationController
   end
 
   def today
-    @category = Category.find(params[:category_id])
-    @tasks = Task.where(date: Date.today)
+    @tasks = current_user.tasks.today
   end
 
   def new
@@ -41,6 +40,6 @@ class TasksController < ApplicationController
   private
 
   def task_params
-    params.require(:task).permit(:title, :description)
+    params.require(:task).permit(:title, :description, :date)
   end
 end
